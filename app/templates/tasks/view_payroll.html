@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h2>Your Payroll</h2>
+{% if payrolls %}
+    {% for payroll in payrolls %}
+        <div class="payroll-item">
+            <h3>{{ payroll.month }}</h3>
+            <p>Salary: ${{ payroll.salary }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No payroll available.</p>
+{% endif %}
+
+    {% endblock %}

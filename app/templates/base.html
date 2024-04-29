@@ -5,6 +5,98 @@
     <title>Workforce Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     {% block extra_css %}{% endblock %}
+    <style>
+            .task-box {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .task-title {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .task-description {
+        font-size: 14px;
+        color: #666;
+    }
+
+    /* CSS for the form */
+    .task-form {
+        margin-top: 20px;
+    }
+
+    .task-form select {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-right: 10px;
+    }
+
+    .task-form button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .task-form button:hover {
+        background-color: #0056b3;
+    }
+        .nav-item{
+            display: flex;
+            justify-content: space-around;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .timesheet-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .timesheet-item h3 {
+            margin-bottom: 5px;
+        }
+
+        .timesheet-item p {
+            margin: 0;
+        }
+        .payroll-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .payroll-item h3 {
+            margin-bottom: 5px;
+        }
+        .schedule-item {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-item h3 {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -18,7 +110,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'task_list' %}">Tasks</a>
                     </li>
-                    <!-- Add other nav links here -->
+                </ul>
+                <ul class="navbar-nav ml-auto"> <!-- Added ml-auto to align to right -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
                 </ul>
             </div>
         </div>

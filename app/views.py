@@ -4,36 +4,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .models import Task, Schedule, Timesheet, Payroll, Employee
-from .forms import TaskForm, ScheduleForm, TimesheetForm, PayrollForm, UserForm
+from .forms import UserForm
+from django.http import JsonResponse
 from .utils import generate_employee_id
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login as auth_login
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        try:
-            user = User.objects.get(username=username)
-            if user.check_password(password):
-                login(request, user)
-                return redirect('task_list')
-            else:
-                error_message = 'Invalid username or password.'
-                return render(request, 'login.html', {'error_message': error_message})
-        except User.DoesNotExist:
-            error_message = 'Invalid username'
-            return render(request, 'login.html', {'error_message': error_message})
-    return render(request, 'login.html')
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('task_list')  # Redirect to your home page after login
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            employee_id = generate_employee_id()  
-            employee = Employee.objects.create(user=user, employee_id=employee_id)
-            return redirect('task_list')
+            form.save()
+            return redirect('login')
     else:
-        form = UserForm()
+        form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
 
 @login_required
@@ -43,21 +38,46 @@ def logout_view(request):
 
 @login_required
 def task_list(request):
-    tasks = Task.objects.filter(assigned_to=request.user.employee)
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+    assigned_tasks = Task.objects.filter(assigned_to=request.user)
+    context = {
+        'assigned_tasks': assigned_tasks,
+    }
+    return render(request, 'tasks/task_list.html', context)
 
-@login_required
-def schedule_list(request):
-    schedules = Schedule.objects.filter(employee=request.user.employee)
-    return render(request, 'schedules/schedule_list.html', {'schedules': schedules})
+def view_schedule(request):
+    # Fetch schedule for the current user
+    schedules = request.user.schedules.all()
+    context = {
+        'schedules': schedules,
+    }
+    return render(request, 'tasks/view_schedule.html', context)
 
-@login_required
-def timesheet_list(request):
-    timesheets = Timesheet.objects.filter(employee=request.user.employee)
-    return render(request, 'timesheets/timesheet_list.html', {'timesheets': timesheets})
+def view_payroll(request):
+    # Fetch payroll for the current user
+    payrolls = request.user.payrolls.all()
+    context = {
+        'payrolls': payrolls,
+    }
+    return render(request, 'tasks/view_payroll.html', context)
 
-@login_required
-def payroll_list(request):
-    payrolls = Payroll.objects.filter(employee=request.user.employee)
-    return render(request, 'payrolls/payroll_list.html', {'payrolls': payrolls})
+def view_timesheet(request):
+    # Fetch timesheets for the current user
+    timesheets = request.user.timesheets.all()
+    context = {
+        'timesheets': timesheets,
+    }
+    return render(request, 'tasks/view_timesheet.html', context)
 
+def update_task_status(request, task_id):
+    if request.method == 'POST':
+        # Retrieve the task object
+        task = Task.objects.get(pk=task_id)
+        # Update the task status
+        new_status = request.POST.get('status')
+        task.status = new_status
+        task.save()
+        # Return JSON response indicating success
+        return JsonResponse({'success': True})
+    else:
+        # Return JSON response indicating failure
+        return JsonResponse({'success': False})
