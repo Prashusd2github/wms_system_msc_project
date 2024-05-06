@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<style>
+    .task-details {
+        width: 50%;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .task-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .task-details p {
+        margin-bottom: 10px;
+    }
+
+    .task-details select {
+        padding: 10px;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .task-details button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .task-details button:hover {
+        background-color: #0056b3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="task-details">
+    <h2 class="task-title">{{ task.title }}</h2>
+    <p>Description: {{ task.description }}</p>
+    <p>Load: {{ task.load }}</p>
+    <p>Deadline: {{ task.end_time }}</p>
+
+    <!-- Form for updating task status -->
+    <form action="{% url 'update_task_status' task.id %}" method="post">
+        {% csrf_token %}
+        <select name="status">
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+        </select>
+        <button type="submit">Update Status</button>
+    </form>
+</div>
+{% endblock %}

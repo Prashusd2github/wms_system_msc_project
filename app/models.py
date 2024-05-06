@@ -1,12 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
-class Employee(models.Model):
+class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    employee_id = models.CharField(max_length=20, unique=True)
-    # password = models.CharField(max_length=50, default=None)
-    def _str_(self):
-        return self.user.username
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Task(models.Model):
     TASK_STATUS_CHOICES = [
@@ -17,23 +15,22 @@ class Task(models.Model):
     
     title = models.CharField(max_length=255)
     description = models.TextField()
-    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_tasks')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=TASK_STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
+    load = models.IntegerField(default= 0)
+
     def _str_(self):
         return self.title
 
 class Schedule(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='schedule_task')
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules')
-    date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     
-    def _str_(self):
-        return f"{self.employee.user.username} - {self.date}"
+    def __str__(self):
+        return f"{self.employee.username} - Schedule"
 
 class Timesheet(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='timesheets')
@@ -45,8 +42,10 @@ class Timesheet(models.Model):
 
 class Payroll(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payrolls')
-    month = models.DateField()
+    date = models.DateField()
     salary = models.DecimalField(max_digits=10, decimal_places=2)
     
     def _str_(self):
         return f"{self.employee.user.username} - {self.month.strftime('%B %Y')}"
+
+

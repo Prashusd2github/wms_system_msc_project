@@ -11,7 +11,7 @@ class TaskForm(forms.ModelForm):
 class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = ['date', 'start_time', 'end_time']
+        fields = ['start_time', 'end_time']
 
 class TimesheetForm(forms.ModelForm):
     class Meta:

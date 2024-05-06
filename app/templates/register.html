@@ -1,11 +1,70 @@
 {% extends 'base.html' %}
 
+{% block extra_css %}
+<style>
+    .register-container {
+        width: 50%;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .register-title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .register-form {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .register-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .register-form input[type="text"],
+    .register-form input[type="email"],
+    .register-form input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .register-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .register-form button:hover {
+        background-color: #0056b3;
+    }
+
+    .register-form p {
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <h1>Register</h1>
-    <form method="post">
+<div class="register-container">
+    <h1 class="register-title">Register</h1>
+    <form class="register-form" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+</div>
 {% endblock %}

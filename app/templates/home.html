@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Tasks</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% for task_info in tasks_with_schedule %}
+<div class="task-box">
+    <h3 class="task-title">{{ task_info.task.title }}</h3>
+    <p class="task-description">{{ task_info.task.description }}</p>
+    <p class="task-deadline">Deadline: {{ task_info.end_time }}</p>
+
+    <!-- Button to view task details -->
+    <a href="{% url 'task_details' task_info.task.id %}" class="btn btn-primary">View Details</a>
+</div>
+{% empty %}
+<p>No tasks available.</p>
+{% endfor %}
+{% endblock %}

@@ -1,31 +1,35 @@
 from django.contrib import admin
-from .models import Employee, Task, Schedule, Timesheet, Payroll
+from .models import Task, Schedule, Timesheet, Payroll, Profile
 
-@admin.register(Employee)
-class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ['user', 'employee_id']
-    search_fields = ['user__username', 'employee_id']
+from django.contrib import admin
 
-@admin.register(Task)
+# Change the name of the administration site
+admin.site.site_header = 'Worker Management System'
+
+class ScheduleInline(admin.TabularInline):
+    model = Schedule
+    extra = 0
+
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ['title', 'assigned_to', 'status', 'created_at', 'updated_at']
-    list_filter = ['status', 'created_at', 'updated_at']
-    search_fields = ['title', 'description', 'assigned_to__user__username']
+    list_display = ('title', 'description', 'amount', 'status', 'created_at')
+    list_filter = ('status',)
+    search_fields = ('title', 'description')
+    inlines = [ScheduleInline]
 
-@admin.register(Schedule)
-class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'date', 'start_time', 'end_time']
-    list_filter = ['date']
-    search_fields = ['employee__user__username']
-
-@admin.register(Timesheet)
 class TimesheetAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'date', 'hours_worked']
-    list_filter = ['date']
-    search_fields = ['employee__user__username']
+    list_display = ('employee', 'date', 'hours_worked')
+    list_filter = ('employee',)
+    search_fields = ('employee__username', 'date')
 
-@admin.register(Payroll)
 class PayrollAdmin(admin.ModelAdmin):
-    list_display = ['employee', 'month', 'salary']
-    list_filter = ['month']
-    search_fields = ['employee__user__username']
+    list_display = ('employee', 'date', 'salary')
+    list_filter = ('employee',)
+    search_fields = ('employee__username', 'date')
+
+admin.site.register(Task, TaskAdmin)
+admin.site.register(Timesheet, TimesheetAdmin)
+admin.site.register(Payroll, PayrollAdmin)
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'hourly_rate')
